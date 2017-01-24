@@ -5,7 +5,7 @@ services:
   main:
     image: vfarcic/jenkins-swarm-agent
     environment:
-      - COMMAND_OPTIONS="-master http://${JENKINS_IP}/jenkins -username admin -password admin -labels 'docker' -executors 5"
+      - COMMAND_OPTIONS=-master http://${JENKINS_IP}/jenkins -username admin -password admin -labels 'docker' -executors 5
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /workspace:/workspace
