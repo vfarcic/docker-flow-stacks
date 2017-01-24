@@ -45,7 +45,7 @@ services:
     environment:
       - SYSLOG_FORMAT=rfc3164
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock \ 
+      - /var/run/docker.sock:/var/run/docker.sock
     command: syslog://logstash:51415
     deploy:
       mode: global
