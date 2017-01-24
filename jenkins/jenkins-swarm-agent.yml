@@ -11,7 +11,3 @@ services:
       - /workspace:/workspace
     deploy:
       mode: global
-
-volumes:
-  main:
-    driver: rexray
