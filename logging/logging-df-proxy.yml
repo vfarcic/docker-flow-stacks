@@ -1,0 +1,51 @@
+version: "3"
+
+networks:
+
+  elk:
+    external: false
+
+  proxy:
+    external: true
+
+services:
+
+  elasticsearch:
+    image: elasticsearch:2.4
+    networks:
+      - elk
+    ports:
+      - 9200:9200
+
+  logstash:
+    image: localhost:5000/logstash:1.0
+    networks:
+      - elk
+    environment:
+      - LOGSPOUT=ignore
+
+  kibana:
+    image: kibana:4.6
+    networks: 
+      - elk
+      - proxy 
+    environment: 
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    deploy:
+      labels: 
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/app/kibana,/bundles,/elasticsearch
+        - com.df.port=5601
+
+  logspout:
+    image: gliderlabs/logspout
+    networks:
+      - elk
+    environment:
+      - SYSLOG_FORMAT=rfc3164
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: syslog://logstash:51415
+    deploy:
+      mode: global
