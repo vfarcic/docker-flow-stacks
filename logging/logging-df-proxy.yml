@@ -2,9 +2,8 @@ version: "3"
 
 networks:
 
-  elk:
+  default:
     external: false
-
   proxy:
     external: true
 
@@ -13,25 +12,34 @@ services:
   elasticsearch:
     image: elasticsearch:2.4
     networks:
-      - elk
-    ports:
-      - 9200:9200
+      - default
+    deploy:
+      resources:
+        reservations:
+          memory: 250M
 
   logstash:
-    image: localhost:5000/logstash:1.0
+    image: vfarcic/logstash-devops21
     networks:
-      - elk
+      - default
     environment:
       - LOGSPOUT=ignore
+    deploy:
+      resources:
+        reservations:
+          memory: 100M
 
   kibana:
     image: kibana:4.6
     networks: 
-      - elk
+      - default
       - proxy 
     environment: 
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     deploy:
+      resources:
+        reservations:
+          memory: 50M
       labels: 
         - com.df.notify=true
         - com.df.distribute=true
@@ -41,7 +49,7 @@ services:
   logspout:
     image: gliderlabs/logspout
     networks:
-      - elk
+      - default
     environment:
       - SYSLOG_FORMAT=rfc3164
     volumes:
