@@ -17,3 +17,5 @@ docker stack deploy -c ../logging/logging-df-proxy.yml logging
 ```bash
 docker stack deploy -c prometheus-grafana-df-proxy.yml metrics
 ```
+
+Use `http://metrics_prometheus:9090` as Prometheus data source and `http://logging_elasticsearch:9200` for ElasticSearch.
