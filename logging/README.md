@@ -1,4 +1,4 @@
-# Jenkins stacks
+# Logging stacks
 
 ## logging-df-proxy.yml
 

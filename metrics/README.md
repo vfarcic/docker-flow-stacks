@@ -1,4 +1,4 @@
-# Jenkins stacks
+# Metrics stacks
 
 ## prometheus-grafana-df-proxy.yml
 
