@@ -43,7 +43,7 @@ services:
       labels:
         - com.df.notify=true
         - com.df.distribute=true
-        - com.df.servicePath=/app,/kibana,/elasticsearch,/api,/ui,/bundles,/plugins
+        - com.df.servicePath=/app,/elasticsearch,/api,/ui,/bundles,/plugins
         - com.df.port=5601
 
   logspout:
