@@ -10,7 +10,7 @@ networks:
 services:
 
   elasticsearch:
-    image: elasticsearch:2.4
+    image: elasticsearch:5.1.2-alpine
     networks:
       - default
     deploy:
@@ -30,20 +30,20 @@ services:
           memory: 100M
 
   kibana:
-    image: kibana:4.6
-    networks: 
+    image: kibana:5.1.2
+    networks:
       - default
-      - proxy 
-    environment: 
+      - proxy
+    environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     deploy:
       resources:
         reservations:
           memory: 50M
-      labels: 
+      labels:
         - com.df.notify=true
         - com.df.distribute=true
-        - com.df.servicePath=/app/kibana,/bundles,/elasticsearch
+        - com.df.servicePath=/app,/kibana,/elasticsearch,/api,/ui,/bundles,/plugins
         - com.df.port=5601
 
   logspout:
