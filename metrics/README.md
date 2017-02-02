@@ -48,7 +48,7 @@ export PASS=secret
 
 docker stack deploy -c prometheus-grafana-df-proxy.yml metrics
 
-open "http://${DOMAIN}"
+open "http://localhost/grafana"
 ```
 
 Use `http://metrics_prometheus:9090` as Prometheus data source and `http://logging_elasticsearch:9200` for ElasticSearch.
