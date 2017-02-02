@@ -40,8 +40,6 @@ docker stack deploy -c ../logging/logging-df-proxy.yml logging
 ### Deployment
 
 ```bash
-export DOMAIN=grafana.my-domain.com
-
 export USER=admin
 
 export PASS=secret
