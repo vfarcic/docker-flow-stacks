@@ -28,6 +28,6 @@ services:
     image: mysql:5.7
     environment:
         MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-wordpress}
-        MYSQL_DATABASE: wordpress
+        MYSQL_DATABASE: ${DB_NAME:-wordpress}
         MYSQL_USER: ${DB_USER:-wordpress}
         MYSQL_PASSWORD: ${DB_PASSWORD:-wordpress}
