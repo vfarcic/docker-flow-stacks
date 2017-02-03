@@ -1,0 +1,33 @@
+version: '3'
+
+networks: 
+  default:
+    external: false
+  proxy:
+    external: true
+
+services:
+
+  main:
+    image: wordpress
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
+      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+    deploy:
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/
+        - com.df.port=80
+    networks:
+      - default
+      - proxy
+
+  mysql:
+    image: mysql:5.7
+    environment:
+        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-wordpress}
+        MYSQL_DATABASE: wordpress
+        MYSQL_USER: ${DB_USER:-wordpress}
+        MYSQL_PASSWORD: ${DB_PASSWORD:-wordpress}

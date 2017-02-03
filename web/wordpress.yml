@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+  main:
+    image: wordpress
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
+      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+    ports:
+      - ${HTTP_PORT:-8080}:80
+
+  mysql:
+    image: mysql:5.7
+    environment:
+        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-wordpress}
+        MYSQL_DATABASE: wordpress
+        MYSQL_USER: ${DB_USER:-wordpress}
+        MYSQL_PASSWORD: ${DB_PASSWORD:-wordpress}
