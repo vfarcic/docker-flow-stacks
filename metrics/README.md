@@ -2,7 +2,7 @@
 
 ## prometheus-grafana.yml
 
-This stack sets up the node-exporter, cAdvisor, Prometheus, and Grafana
+This stack deploys node-exporter, cAdvisor, Prometheus, and Grafana
 
 ### Requirements
 
