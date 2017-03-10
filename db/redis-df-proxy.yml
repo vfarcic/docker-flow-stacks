@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+
+  main:
+    image: redis:3.2
+    networks:
+      - proxy
+    deploy:
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.srcPort=6379
+        - com.df.port=6379
+        - com.df.reqMode=tcp
+
+networks:
+  proxy:
+    external: true
