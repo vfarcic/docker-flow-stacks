@@ -36,16 +36,12 @@ CONNECTION_MODE=http-keep-alive \
 
 ### Deployment
 
-Portainer requires root path. Unless it is the only front-facing service in the cluster, it should run in a separate domain. Please replace `192.168.1.38.xip.io` with your (sub)domain.
-
 ```bash
-SERVICE_DOMAIN=192.168.1.38.xip.io
-
 docker stack deploy \
     -c portainer-df-proxy.yml \
     portainer
 
-open "http://$SERVICE_DOMAIN"
+open "localhost/portainer"
 ```
 
 ## registry-rexray.yml
