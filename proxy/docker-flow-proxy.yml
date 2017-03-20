@@ -17,6 +17,7 @@ services:
     environment:
       - LISTENER_ADDRESS=swarm-listener
       - MODE=swarm
+      - CONNECTION_MODE=${CONNECTION_MODE:-http-server-close}
     deploy:
       replicas: 3
 

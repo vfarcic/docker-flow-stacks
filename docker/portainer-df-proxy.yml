@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+
+  main:
+    image: portainer/portainer
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - proxy
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/
+        - com.df.serviceDomain=${SERVICE_DOMAIN}
+        - com.df.port=9000
+    command: -H unix:///var/run/docker.sock
+
+networks:
+  proxy:
+    external: true
