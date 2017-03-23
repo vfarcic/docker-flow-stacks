@@ -61,3 +61,23 @@ This stack sets up Docker private registry with *REX-Ray* for network storage.
 ```bash
 docker stack deploy -c registry-rexray.yml registry
 ```
+
+## registry-rexray-external.yml
+
+This stack sets up Docker private registry with externally defined *REX-Ray* volume for network storage.
+
+### Requirements
+
+* REX-Ray driver is configured
+
+```bash
+# Configure REX-Ray (out of scope of this README)
+
+docker volume create -d rexray registry
+```
+
+### Deployment
+
+```bash
+docker stack deploy -c registry-rexray-external.yml registry
+```
