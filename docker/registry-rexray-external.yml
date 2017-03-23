@@ -7,13 +7,13 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - main:/var/lib/registry
+      - registry:/var/lib/registry
     deploy:
       resources:
         reservations:
           memory: 100M
 
 volumes:
-  main:
+  registry:
     driver: rexray
     external: true

@@ -68,7 +68,7 @@ This stack sets up Docker private registry with externally defined *REX-Ray* vol
 
 ### Requirements
 
-* REX-Ray driver is configured
+* REX-Ray driver is configured and the registry volume is created
 
 ```bash
 # Configure REX-Ray (out of scope of this README)
