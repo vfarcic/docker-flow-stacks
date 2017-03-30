@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+
+  main:
+    image: cloudbees/jenkins-enterprise:${TAG:-2.32.2.7}
+    ports:
+      - ${PORT:-8080}:8080
