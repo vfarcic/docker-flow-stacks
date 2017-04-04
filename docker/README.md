@@ -24,8 +24,6 @@ This stack deploys Portainer integrated with *Docker Flow Proxy*.
 * Docker Flow Proxy is running and has the environment variable `CONNECTION_MODE=http-keep-alive`
 
 ```bash
-# Configure REX-Ray (out of scope of this README)
-
 docker network create --driver overlay proxy
 
 CONNECTION_MODE=http-keep-alive \
