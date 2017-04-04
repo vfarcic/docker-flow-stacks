@@ -39,7 +39,7 @@ docker stack deploy \
     -c portainer-df-proxy.yml \
     portainer
 
-open "localhost/portainer"
+open "http://localhost/portainer/"
 ```
 
 ## registry-rexray.yml
