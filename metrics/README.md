@@ -1,5 +1,21 @@
 # Metrics stacks
 
+## prometheus.yml
+
+This stack deploys Prometheus
+
+### Requirements
+
+None
+
+### Deployment
+
+```bash
+docker stack deploy -c prometheus.yml metrics
+
+open "http://localhost:9090"
+```
+
 ## prometheus-grafana.yml
 
 This stack deploys node-exporter, cAdvisor, Prometheus, and Grafana
