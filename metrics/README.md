@@ -1,5 +1,21 @@
 # Metrics stacks
 
+## docker-flow-monitor.yml
+
+This stack deploys Docker Flow Monitor.
+
+### Requirements
+
+None
+
+### Deployment
+
+```bash
+docker stack deploy -c docker-flow-monitor.yml monitor
+
+open "http://localhost:9090"
+```
+
 ## prometheus.yml
 
 This stack deploys Prometheus
