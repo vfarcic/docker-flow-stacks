@@ -10,7 +10,7 @@ services:
       - ARG_WEB_EXTERNAL-URL=http://${DOMAIN:-localhost}/monitor
     networks:
       - proxy
-      - default
+      - monitor
     deploy:
       labels:
         - com.df.notify=true
@@ -22,7 +22,7 @@ services:
   swarm-listener:
     image: vfarcic/docker-flow-swarm-listener
     networks:
-      - proxy
+      - monitor
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
@@ -33,7 +33,7 @@ services:
         constraints: [node.role == manager]
 
 networks:
-  default:
-    external: false
+  monitor:
+    external: true
   proxy:
     external: true

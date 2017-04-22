@@ -34,7 +34,38 @@ docker stack deploy -c ../proxy/docker-flow-proxy.yml proxy
 ### Deployment
 
 ```bash
+docker network create --driver overlay monitor
+
 docker stack deploy -c docker-flow-monitor-proxy.yml monitor
+
+open "http://localhost/monitor"
+```
+
+## exporters.yml
+
+This stack deploys Prometheus *HA PRoxy Exporter*.
+
+### Requirements
+
+* Network called `proxy` is created
+* Network called `monitor` is created
+* *Docker Flow Proxy* is running
+* *Docker Flow Monitor* is running
+
+```bash
+docker network create --driver overlay proxy
+
+docker stack deploy -c ../proxy/docker-flow-proxy.yml proxy
+
+docker network create --driver overlay monitor
+
+docker stack deploy -c docker-flow-monitor-proxy.yml monitor
+```
+
+### Deployment
+
+```bash
+docker stack deploy -c exporters.yml exporter
 
 open "http://localhost/monitor"
 ```

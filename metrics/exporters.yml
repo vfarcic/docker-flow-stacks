@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+
+  ha-proxy:
+    image: quay.io/prometheus/haproxy-exporter:${TAG:-latest}
+    networks:
+      - proxy
+      - monitor
+    deploy:
+      labels:
+        - com.df.notify=true
+        - com.df.scrapePort=9101
+    command: -haproxy.scrape-uri="http://admin:admin@proxy/admin?stats;csv"
+
+networks:
+  monitor:
+    external: true
+  proxy:
+    external: true
