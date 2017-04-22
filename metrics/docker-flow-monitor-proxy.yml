@@ -2,7 +2,7 @@ version: "3"
 
 services:
 
-  prometheus:
+  monitor:
     image: vfarcic/docker-flow-monitor:${TAG:-latest}
     environment:
       - GLOBAL_SCRAPE_INTERVAL=10s
