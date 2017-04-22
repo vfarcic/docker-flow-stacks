@@ -5,6 +5,6 @@ services:
   prometheus:
     image: vfarcic/docker-flow-monitor:${TAG:-latest}
     environment:
-      -e GLOBAL_SCRAPE_INTERVAL=10s
+      - GLOBAL_SCRAPE_INTERVAL=10s
     ports:
       - 9090:9090
