@@ -2,7 +2,7 @@
 
 ## docker-flow-monitor.yml
 
-This stack deploys Docker Flow Monitor.
+This stack deploys *Docker Flow Monitor*.
 
 ### Requirements
 
@@ -14,6 +14,29 @@ None
 docker stack deploy -c docker-flow-monitor.yml monitor
 
 open "http://localhost:9090"
+```
+
+## docker-flow-monitor-proxy.yml
+
+This stack deploys *Docker Flow Monitor* and *Docker Flow Swarm Listener*.
+
+### Requirements
+
+* Network called `proxy` is created
+* *Docker Flow Proxy* is running
+
+```bash
+docker network create --driver overlay proxy
+
+docker stack deploy -c ../proxy/docker-flow-proxy.yml proxy
+```
+
+### Deployment
+
+```bash
+docker stack deploy -c docker-flow-monitor-proxy.yml monitor
+
+open "http://localhost/monitor"
 ```
 
 ## prometheus.yml
