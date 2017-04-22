@@ -8,7 +8,7 @@ services:
       - GLOBAL_SCRAPE_INTERVAL=10s
       - ARG_WEB_ROUTE-PREFIX=/monitor
       - ARG_WEB_EXTERNAL-URL=http://${DOMAIN:-localhost}/monitor
-    network:
+    networks:
       - proxy
       - default
     deploy:
