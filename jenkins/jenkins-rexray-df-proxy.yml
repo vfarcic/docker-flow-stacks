@@ -3,7 +3,7 @@ version: '3'
 services:
 
   main:
-    image: jenkins:${TAG:-2.32.3-alpine}
+    image: jenkinsci/jenkins:${TAG:-2.32.3-alpine}
     ports:
       - "50000:50000"
     environment:
