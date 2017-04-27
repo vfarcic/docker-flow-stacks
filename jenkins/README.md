@@ -1,5 +1,30 @@
 # Jenkins stacks
 
+## jenkins-df-proxy.yml
+
+This stack sets up Jenkins master integrated with *Docker Flow Proxy*.
+
+### Requirements
+
+* Network called `proxy` is created
+* Docker Flow Proxy is running
+
+```bash
+docker network create --driver overlay proxy
+
+docker stack deploy -c ../proxy/docker-flow-proxy.yml proxy
+```
+
+### Deployment
+
+```bash
+docker stack deploy -c jenkins-df-proxy.yml jenkins
+
+open "http://localhost/jenkins"
+
+docker service logs jenkins_main # Copy the password and paste it in the UI
+```
+
 ## jenkins-rexray-df-proxy.yml
 
 This stack sets up Jenkins master with *REX-Ray* for network storage and *Docker Flow Proxy*.
@@ -23,7 +48,9 @@ docker stack deploy -c ../proxy/docker-flow-proxy.yml proxy
 ```bash
 docker stack deploy -c jenkins-rexray-df-proxy.yml jenkins
 
-open "localhost/jenkins"
+open "http://localhost/jenkins"
+
+docker service logs jenkins_main # Copy the password and paste it in the UI
 ```
 
 ## jenkins-swarm-agent.yml
