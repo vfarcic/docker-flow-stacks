@@ -1,8 +1,28 @@
 # Jenkins stacks
 
+## jenkins.yml
+
+This stack sets up a Jenkins master.
+
+### Requirements
+
+None
+
+### Deployment
+
+```bash
+docker stack deploy -c jenkins.yml jenkins
+
+open "http://localhost/jenkins"
+
+docker service logs jenkins_main # Copy the password and paste it in the UI
+
+# Follow the setup instructions in UI
+```
+
 ## jenkins-df-proxy.yml
 
-This stack sets up Jenkins master integrated with *Docker Flow Proxy*.
+This stack sets up a Jenkins master integrated with *Docker Flow Proxy*.
 
 ### Requirements
 
