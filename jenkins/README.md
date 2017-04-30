@@ -23,6 +23,8 @@ docker stack deploy -c jenkins-df-proxy.yml jenkins
 open "http://localhost/jenkins"
 
 docker service logs jenkins_main # Copy the password and paste it in the UI
+
+# Follow the setup instructions in UI
 ```
 
 ## jenkins-rexray-df-proxy.yml
@@ -61,6 +63,7 @@ This stack deploys Jenkins agents to all the nodes of a Swarm cluster.
 
 * `/workspace` directory needs to exist on all nodes of a cluster
 * Jenkins master service running
+* *Self-Organizing Swarm Plug-in Modules* plugin is installed in Jenkins master
 
 ```bash
 sudo mkdir /workspace
@@ -68,6 +71,8 @@ sudo mkdir /workspace
 sudo chmod 777 /workspace
 
 # Deploy Jenkins master using one of the stacks (e.g. jenkins-rexray-df-proxy.yml)
+
+# Install *Self-Organizing Swarm Plug-in Modules* plugin
 ```
 
 ### Deployment
@@ -75,25 +80,35 @@ sudo chmod 777 /workspace
 ```bash
 export JENKINS_IP=[...]
 
-docker stack deploy -c jenkins-swarm-agent.yml jenkins-agent
+# Replace MASTER_USER and MASTER_PASS with "real" values
+MASTER_USER=admin \
+    MASTER_PASS=admin \
+    docker stack deploy -c jenkins-swarm-agent.yml jenkins-agent
 ```
 
-## jenkins-swarm-agent-rexray.yml
+## jenkins-swarm-agent-secrets.yml
 
-This stack deploys Jenkins agents to all the nodes of a Swarm cluster. REX-Ray is used for persisting agent workspaces.
+This stack deploys Jenkins agents to all the nodes of a Swarm cluster.
 
 ### Requirements
 
-* REX-Ray driver is configured
-
-```bash
-# Configure REX-Ray (out of scope of this README)
-```
-
+* `/workspace` directory needs to exist on all nodes of a cluster
 * Jenkins master service running
+* *Self-Organizing Swarm Plug-in Modules* plugin is installed in Jenkins master
+* Secrets with Jenkins master username and password are created
 
 ```bash
+sudo mkdir /workspace
+
+sudo chmod 777 /workspace
+
 # Deploy Jenkins master using one of the stacks (e.g. jenkins-rexray-df-proxy.yml)
+
+# Install *Self-Organizing Swarm Plug-in Modules* plugin
+
+echo "admin" | docker secret create jenkins-user -
+
+echo "admin" | docker secret create jenkins-pass -
 ```
 
 ### Deployment
@@ -101,5 +116,8 @@ This stack deploys Jenkins agents to all the nodes of a Swarm cluster. REX-Ray i
 ```bash
 export JENKINS_IP=[...]
 
-docker stack deploy -c jenkins-swarm-agent-rexray.yml jenkins-agent
+# Replace MASTER_USER and MASTER_PASS with "real" values
+JENKINS_USER_SECRET=jenkins-user \
+    JENKINS_PASS_SECRET=jenkins-pass \
+    docker stack deploy -c jenkins-swarm-agent-secrets.yml jenkins-agent
 ```
