@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+
+  elk:
+    image: sebp/elk
+    ports:
+      - 5601:5601
+      - 9200:9200
+      - 5044:5044
+
+# docker stack deploy -c xxx.yml elk
+# docker stack ps elk
+# open "http://localhost:5601"
+# Got "Unable to connect to Elasticsearch at http://localhost:9200." error message

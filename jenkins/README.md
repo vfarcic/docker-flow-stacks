@@ -13,7 +13,7 @@ None
 ```bash
 docker stack deploy -c jenkins.yml jenkins
 
-open "http://localhost/jenkins"
+open "http://localhost:8080/jenkins"
 
 docker service logs jenkins_main # Copy the password and paste it in the UI
 

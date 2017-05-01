@@ -25,8 +25,9 @@ services:
     image: kibana:4.6
     networks: 
       - elk
-      - proxy 
-    environment: 
+    ports:
+      - 5601:5601
+    environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
 
   logspout:
