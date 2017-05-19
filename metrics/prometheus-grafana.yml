@@ -45,7 +45,7 @@ services:
       - 9091:9090
 
   grafana:
-    image: grafana/grafana:3.1.1
+    image: grafana/grafana:4.1.1
     networks:
       - default
       - logging_default
