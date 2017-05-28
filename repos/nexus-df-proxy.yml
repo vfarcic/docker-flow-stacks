@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+  main:
+    image: sonatype/nexus3
+    networks:
+      - proxy
+    deploy:
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.serviceDomain=${DOMAIN:-localhost}
+        - com.df.servicePath.1=/
+        - com.df.port.1=8081
+        - com.df.srcPort.1=80
+
+networks:
+  proxy:
+    external: true

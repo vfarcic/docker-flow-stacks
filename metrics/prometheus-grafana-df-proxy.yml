@@ -1,14 +1,5 @@
 version: "3"
 
-networks:
-
-  default:
-    external: false
-  logging_default:
-    external: true
-  proxy:
-    external: true
-
 services:
 
   node-exporter:
@@ -64,3 +55,11 @@ services:
         - com.df.reqPathSearch=/grafana/
         - com.df.reqPathReplace=/
         - com.df.port=3000
+
+networks:
+  default:
+    external: false
+  logging_default:
+    external: true
+  proxy:
+    external: true

@@ -1,0 +1,7 @@
+version: '3.1'
+
+services:
+  main:
+    image: sonatype/nexus3
+    ports:
+      - 8081:8081
