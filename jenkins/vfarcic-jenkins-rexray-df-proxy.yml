@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+
+  main:
+    image: vfarcic/jenkins
+    ports:
+      - 50000:50000
+    environment:
+      - JENKINS_OPTS="--prefix=/jenkins"
+    networks:
+      - proxy
+    volumes:
+      - main:/var/jenkins_home
+    deploy:
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/jenkins
+        - com.df.port=8080
+    secrets:
+      - jenkins-user
+      - jenkins-pass
+
+volumes:
+  main:
+    driver: rexray
+
+networks:
+  proxy:
+    external: true
+
+secrets:
+  jenkins-user:
+    external: true
+  jenkins-pass:
+    external: true
