@@ -8,8 +8,6 @@ pipeline {
   stages {
     stage("build") {
       steps {
-        checkout scm
-        dir "jenkins"
         sh "docker image build -t vfarcic/jenkins ."
         withCredentials([usernamePassword(
           credentialsId: "docker",
@@ -23,9 +21,6 @@ pipeline {
     }
   }
   post {
-    always {
-      sh "docker system prune -f"
-    }
     failure {
       slackSend(
         color: "danger",
