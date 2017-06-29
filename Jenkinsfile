@@ -8,6 +8,7 @@ pipeline {
   stages {
     stage("build") {
       steps {
+        checkout scm
         dir "jenkins"
         sh "docker image build -t vfarcic/jenkins ."
         withCredentials([usernamePassword(
