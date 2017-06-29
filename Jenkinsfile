@@ -8,6 +8,7 @@ pipeline {
   stages {
     stage("build") {
       steps {
+        sh "ls -l"
         sh "docker image build -t vfarcic/jenkins ."
         withCredentials([usernamePassword(
           credentialsId: "docker",
