@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage("build") {
       steps {
-        dir "jenkins"
+        dir path: "jenkins"
         sh "docker image build -t vfarcic/jenkins ."
         withCredentials([usernamePassword(
           credentialsId: "docker",
