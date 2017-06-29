@@ -1,6 +1,5 @@
 antisamy-markup-formatter
 bouncycastle-api
-ci-skip
 credentials
 display-url-api
 build-timeout
