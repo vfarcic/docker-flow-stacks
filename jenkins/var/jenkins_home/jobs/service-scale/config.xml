@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <flow-definition plugin="workflow-job@2.11.1">
   <actions>
     <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.1.2">
@@ -78,5 +78,6 @@ ${env.BUILD_URL}console&quot;&quot;&quot;
     <sandbox>true</sandbox>
   </definition>
   <triggers/>
+  <authToken>DevOps22</authToken>
   <disabled>false</disabled>
 </flow-definition>
