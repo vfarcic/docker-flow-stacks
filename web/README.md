@@ -64,7 +64,7 @@ The environment variables that can be used to customize the deployment are as fo
 
 ## docker-visualizer.yml
 
-This stack sets up [Docker Swarm Visualizer](https://hub.docker.com/r/manomarks/visualizer/).
+This stack sets up [Docker Swarm Visualizer](https://hub.docker.com/r/dockersamples/visualizer/).
 
 ### Requirements
 
@@ -85,3 +85,27 @@ The environment variables that can be used to customize the deployment are as fo
 |Name             |Description                  |Default   |
 |-----------------|-----------------------------|----------|
 |HTTP_PORT        |Exposed port                 |8080      |
+
+
+## docker-visualizer-df-proxy.yml
+
+This stack sets up [Docker Swarm Visualizer](https://hub.docker.com/r/dockersamples/visualizer/). It uses [Docker Flow Proxy](http://proxy.dockerflow.com/) for forwarding.
+
+### Requirements
+
+* Network called `proxy` is created
+* Docker Flow Proxy is running
+
+```bash
+docker network create --driver overlay proxy
+
+docker stack deploy -c ../proxy/docker-flow-proxy.yml proxy
+```
+
+### Deployment
+
+```bash
+docker stack deploy -c docker-visualizer-df-proxy.yml visualizer
+
+open "http://localhost/visualizer/"
+```

@@ -1,3 +1,4 @@
+ace-editor
 antisamy-markup-formatter
 bouncycastle-api
 credentials
@@ -12,6 +13,7 @@ mailer
 matrix-auth
 matrix-project
 pam-auth
+pipeline-milestone-step
 plain-credentials
 scm-api
 script-security
@@ -21,11 +23,9 @@ token-macro
 windows-slaves
 workflow-step-api
 workflow-api
-ace-editor
 workflow-scm-step
 workflow-support
 workflow-cps
-pipeline-milestone-step
 pipeline-input-step
 pipeline-stage-step
 pipeline-utility-steps

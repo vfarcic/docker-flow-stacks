@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+
+  main:
+    image: dockersamples/visualizer
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/visualizer
+        - com.df.reqPathSearch=/visualizer
+        - com.df.port=8080
+        - com.df.pathType=path_dir
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  proxy:
+    external: true
