@@ -25,9 +25,9 @@ pipeline {
         )]) {
           sh "docker login -u $USER -p $PASS"
         }
-        sh "docker image push vfarcic/jenkins"
         sh "docker image tag vfarcic/jenkins vfarcic/jenkins:${currentBuild.displayName}"
         sh "docker image push vfarcic/jenkins:${currentBuild.displayName}"
+        sh "docker image push vfarcic/jenkins"
       }
     }
   }
