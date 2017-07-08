@@ -5,9 +5,16 @@ pipeline {
   options {
     buildDiscarder(logRotator(numToKeepStr: '2'))
   }
+  triggers {
+    cron('H H * * 0')
+  }
   stages {
     stage("build") {
       steps {
+        script {
+          def dateFormat = new SimpleDateFormat("yy-MM")
+          currentBuild.displayName = dateFormat.format(new Date()) + "-" + env.BUILD_NUMBER
+        }
         sh "cd jenkins && docker image build -t vfarcic/jenkins ."
         withCredentials([usernamePassword(
           credentialsId: "docker",
@@ -16,7 +23,8 @@ pipeline {
         )]) {
           sh "docker login -u $USER -p $PASS"
         }
-        sh "docker push vfarcic/jenkins"
+        sh "docker image push vfarcic/jenkins"
+        sh "docker image push vfarcic/jenkins:${currentBuild.displayName}"
       }
     }
   }
