@@ -1,0 +1,72 @@
+version: "3"
+
+services:
+
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    networks:
+      - default
+
+  adminer:
+    image: adminer
+    ports:
+      - 8081:8080
+#    deploy:
+#      labels:
+#        - com.df.notify=true
+#        - com.df.distribute=true
+#        - com.df.pathType=path_dir
+#        - com.df.servicePath=/mon/db
+#        - com.df.port=8080
+    networks:
+      - default
+
+  server:
+    image: zabbix/zabbix-server-mysql:alpine-latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=zabbix
+      - MYSQL_DATABASE=zabbix
+      - DB_SERVER_HOST=db
+      - ZBX_DEBUGLEVEL=3
+      - ZBX_TIMEOUT=30
+      - ZBX_STARTPOLLERS=20
+      - ZBX_STARTPOLLERSUNREACHABLE=10
+      - ZBX_STARTPINGERS=10
+      - ZBX_STARTDISCOVERERS=10
+      - ZBX_STARTJAVAPOLLERS=5
+      - ZBX_VALUECACHESIZE=64M
+      - ZBX_CACHESIZE=128M
+      - ZBX_TRENDCACHESIZE=128M
+    networks:
+      - default
+
+  web:
+    image: zabbix/zabbix-web-nginx-mysql:alpine-latest
+#    deploy:
+#      labels:
+#        - com.df.notify=true
+#        - com.df.distribute=true
+#        - com.df.pathType=path_dir
+#        - com.df.servicePath=/mon/admin
+#        - com.df.port=80
+    ports:
+      - 8080:80
+    environment:
+      - ZBX_SERVER_HOST=server
+      - ZBX_SERVER_PORT=10051
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=zabbix
+      - MYSQL_DATABASE=zabbix
+      - DB_SERVER_HOST=db
+      - ZBX_SERVER_NAME=ZabbixServer
+      - ZBX_UPLOADMAXFILESIZE=16M
+    networks:
+      - default
+
+networks:
+  default:
+    external: false

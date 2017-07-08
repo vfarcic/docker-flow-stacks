@@ -136,3 +136,13 @@ open "http://localhost/grafana"
 ```
 
 Use `http://metrics_prometheus:9090` as Prometheus data source and `http://logging_elasticsearch:9200` for ElasticSearch.
+
+
+
+
+
+```bash
+docker stack deploy -c zabbix.yml zabbix
+
+open "http://localhost:8081/"
+```
