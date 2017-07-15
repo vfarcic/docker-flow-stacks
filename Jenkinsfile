@@ -14,7 +14,7 @@ pipeline {
     stage("build") {
       steps {
         script {
-          def dateFormat = new SimpleDateFormat("yy-MM")
+          def dateFormat = new SimpleDateFormat("yy.MM.dd")
           currentBuild.displayName = dateFormat.format(new Date()) + "-" + env.BUILD_NUMBER
         }
         sh "cd jenkins && docker image build -t vfarcic/jenkins ."
@@ -28,6 +28,7 @@ pipeline {
         sh "docker image tag vfarcic/jenkins vfarcic/jenkins:${currentBuild.displayName}"
         sh "docker image push vfarcic/jenkins:${currentBuild.displayName}"
         sh "docker image push vfarcic/jenkins"
+        sh "docker service update --image vfarcic/jenkins:${currentBuild.displayName} infra_jenkins-master"
       }
     }
   }
