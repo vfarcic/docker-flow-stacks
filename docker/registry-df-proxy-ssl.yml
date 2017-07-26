@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+
+  main:
+    image: registry
+    ports:
+      - "5000:5000"
+    networks:
+      - proxy
+    deploy:
+      resources:
+        reservations:
+          memory: 100M
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.port=5000
+        - com.df.serviceDomain=${DOMAIN}
+        - com.df.xForwardedProto=true
+
+networks:
+  proxy:
+    external: true

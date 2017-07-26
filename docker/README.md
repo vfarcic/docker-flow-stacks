@@ -61,18 +61,35 @@ docker swarm init \
 
 docker network create --driver overlay proxy
 
-docker stack deploy \
+DOMAIN=localhost docker stack deploy \
     -c ../proxy/docker-flow-proxy.yml \
     proxy
 ```
 
-### Deployment
+## registry-df-proxy-ssl.yml
+
+This stack sets up Docker private registry integrated with *Docker Flow Proxy*.
+It also assumes that ssl is terminated at the proxy.
+
+### Requirements
+
+* Network called `proxy` is created
+* Docker Flow Proxy is running and has the environment variable `CONNECTION_MODE=http-keep-alive`
+* SSL Terminated at proxy.
 
 ```bash
-DOMAIN=localhost \
-    docker stack deploy \
-    -c registry-df-proxy.yml \
-    registry
+docker-machine create -d virtualbox test
+
+eval $(docker-machine env test)
+
+docker swarm init \
+    --advertise-addr $(docker-machine ip test)
+
+docker network create --driver overlay proxy
+
+DOMAIN=localhost docker stack deploy \
+    -c ../proxy/docker-flow-proxy-ssl.yml \
+    proxy
 ```
 
 ### Test
