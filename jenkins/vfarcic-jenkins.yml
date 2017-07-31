@@ -3,7 +3,7 @@ version: '3.1'
 services:
 
   main:
-    image: vfarcic/jenkins
+    image: vfarcic/jenkins:${TAG:-latest}
     ports:
       - 8080:8080
       - 50000:50000
