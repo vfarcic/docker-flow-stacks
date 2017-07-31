@@ -6,6 +6,10 @@ services:
     image: ${HUB_USER:-vfarcic}/jenkins:${TAG:-latest}
     ports:
       - 50000:50000
+    environment:
+      - JENKINS_OPTS="--prefix=/jenkins"
+    networks:
+      - proxy
     volumes:
       - jm:/var/jenkins_home
       - jmshare:/usr/share/jenkins/ref
