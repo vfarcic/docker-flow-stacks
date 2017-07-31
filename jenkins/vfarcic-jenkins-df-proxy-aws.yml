@@ -3,7 +3,7 @@ version: "3.1"
 services:
 
   jenkins-master:
-    image: vfarcic/jenkins:${TAG:-latest}
+    image: ${HUB_USER:-vfarcic}/jenkins:${TAG:-latest}
     ports:
       - 50000:50000
     volumes:
