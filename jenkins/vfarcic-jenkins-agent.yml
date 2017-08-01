@@ -16,6 +16,7 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+      replicas: ${REPLICAS:-1}
       resources:
         reservations:
           memory: 500M
