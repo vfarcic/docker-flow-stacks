@@ -42,6 +42,42 @@ docker stack deploy \
 open "http://localhost/portainer/"
 ```
 
+## registry.yml
+
+This stack sets up Docker private registry.
+
+### Requirements
+
+None
+
+### Deployment
+
+```bash
+docker stack deploy -c registry.yml registry
+```
+
+## registry-cert.yml
+
+This stack sets up Docker private registry with certificates injected as Docker services.
+
+### Requirements
+
+Certificates and docker secrets.
+
+```bash
+docker secret create registry.crt certs/registry.crt
+
+docker secret create registry.key certs/registry.key
+```
+
+Feel free to replace `certs/registry.crt` and `certs/registry.key` with paths to your certificate and the key.
+
+### Deployment
+
+```bash
+docker stack deploy -c registry-cert.yml registry
+```
+
 ## registry-df-proxy.yml
 
 This stack sets up Docker private registry integrated with *Docker Flow Proxy*.
@@ -64,6 +100,12 @@ docker network create --driver overlay proxy
 DOMAIN=localhost docker stack deploy \
     -c ../proxy/docker-flow-proxy.yml \
     proxy
+```
+
+### Deployment
+
+```bash
+docker stack deploy -c registry-df-proxy.yml registry
 ```
 
 ## registry-df-proxy-ssl.yml
@@ -90,6 +132,12 @@ docker network create --driver overlay proxy
 DOMAIN=localhost docker stack deploy \
     -c ../proxy/docker-flow-proxy-ssl.yml \
     proxy
+```
+
+### Deployment
+
+```bash
+docker stack deploy -c registry-df-proxy-ssl.yml registry
 ```
 
 ### Test

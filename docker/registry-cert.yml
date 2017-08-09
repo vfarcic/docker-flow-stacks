@@ -1,0 +1,24 @@
+version: "3.1"
+
+services:
+
+  main:
+    image: registry
+    ports:
+      - 5000:5000
+    environment:
+      - REGISTRY_HTTP_TLS_CERTIFICATE=/run/secrets/registry.crt
+      - REGISTRY_HTTP_TLS_KEY=/run/secrets/registry.key
+    secrets:
+      - registry.crt
+      - registry.key
+    deploy:
+      resources:
+        reservations:
+          memory: 100M
+
+secrets:
+  registry.crt:
+    external: true
+  registry.key:
+    external: true
