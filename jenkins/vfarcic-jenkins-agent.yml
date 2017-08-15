@@ -7,7 +7,7 @@ services:
     environment:
       - USER_NAME_SECRET=/run/secrets/${JENKINS_USER_SECRET:-jenkins-user}
       - PASSWORD_SECRET=/run/secrets/${JENKINS_PASS_SECRET:-jenkins-pass}
-      - COMMAND_OPTIONS=-master ${JENKINS_URL} -labels "${LABEL:-test}" -executors 1
+      - COMMAND_OPTIONS=-master ${JENKINS_URL} -labels "${LABEL:-test}" -executors ${EXECUTORS:-1}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     secrets:
