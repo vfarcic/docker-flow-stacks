@@ -17,7 +17,7 @@ pipeline {
           def dateFormat = new SimpleDateFormat("yy.MM.dd")
           currentBuild.displayName = dateFormat.format(new Date()) + "-" + env.BUILD_NUMBER
         }
-        sh "cd jenkins && docker image build -t vfarcic/jenkins ."
+        sh "cd jenkins && docker image build --no-cache -t vfarcic/jenkins ."
         withCredentials([usernamePassword(
           credentialsId: "docker",
           usernameVariable: "USER",
