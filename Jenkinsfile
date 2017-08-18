@@ -11,7 +11,7 @@ pipeline {
     cron('H H * * 0')
   }
   stages {
-    stage("build") {
+    stage("jenkins") {
       steps {
         script {
           def dateFormat = new SimpleDateFormat("yy.MM.dd")
