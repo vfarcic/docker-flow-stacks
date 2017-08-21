@@ -41,11 +41,7 @@ secrets:
 volumes:
   jm:
     driver: cloudstor:aws
-    driver_opts:
-      size: "25"
     external: false
   jmshare:
     driver: cloudstor:aws
-    driver_opts:
-      size: "10"
     external: false
