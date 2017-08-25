@@ -8,3 +8,5 @@ git
 github
 swarm
 blueocean
+ec2
+thinBackup

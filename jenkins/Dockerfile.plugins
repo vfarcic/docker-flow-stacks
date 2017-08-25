@@ -1,4 +1,4 @@
-FROM jenkins:alpine
+FROM jenkins/jenkins:alpine
 
 # Whether to skip setup wizard
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
