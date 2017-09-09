@@ -10,3 +10,4 @@ swarm
 blueocean
 ec2
 thinBackup
+github-oauth

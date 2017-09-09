@@ -40,6 +40,11 @@ pipeline {
         sh "docker image push vfarcic/compose"
       }
     }
+    stage("cleanup") {
+      steps {
+        sh "docker run -d -e INTERVAL_IN_HOURS=24 -e OLDER_THAN_IN_DAYS="10" --link es1:elasticsearch visity/elasticsearch-curator"
+      }
+    }
   }
   post {
     always {
@@ -53,3 +58,11 @@ pipeline {
     }
   }
 }
+
+
+docker run -d --name elasticsearch-curator \
+    -e INTERVAL_IN_HOURS=24 \
+    -e OLDER_THAN_IN_DAYS="2" \
+    -e ELASTICSEARCH_HOST=elasticsearch \
+    --network infra_default \
+    visity/elasticsearch-curator

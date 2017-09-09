@@ -9,8 +9,9 @@ This stack sets up the ELK stack (ElasticSearch, LogStash, and Kibana) and LogSp
 * Network called `proxy` is created
 * Docker Flow Proxy is running
 * `sysctl -w vm.max_map_count=262144`
+* Docker `config` with LogStash configuration
 
-For ElasticSearch to work properly, `sudo sysctl -w vm.max_map_count=262144` must be run on the server. It's best to put this in the packer.json file
+For ElasticSearch to work properly, `sudo sysctl -w vm.max_map_count=262144` must be run on the server.
 
 ```bash
 sudo sysctl -w vm.max_map_count=262144
@@ -18,6 +19,18 @@ sudo sysctl -w vm.max_map_count=262144
 docker network create --driver overlay proxy
 
 docker stack deploy -c ../proxy/docker-flow-proxy.yml proxy
+
+echo '
+input {
+  syslog { port => 51415 }
+}
+
+output {
+  elasticsearch {
+    hosts => ["elasticsearch:9200"]
+  }
+}
+' | docker config create logstash.conf -
 ```
 
 ### Deployment

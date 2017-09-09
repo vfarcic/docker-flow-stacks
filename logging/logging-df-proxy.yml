@@ -1,53 +1,62 @@
-version: "3"
-
-networks:
-
-  default:
-    external: false
-  proxy:
-    external: true
+version: "3.3"
 
 services:
 
   elasticsearch:
-    image: elasticsearch:5.1.2-alpine
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
+    environment:
+      - xpack.security.enabled=false
     networks:
       - default
     deploy:
-      resources:
-        reservations:
-          memory: 250M
+      labels:
+        - com.df.distribute=true
+        - com.df.notify=true
+        - com.df.port=80
+        - com.df.alertName=memlimit
+        - com.df.alertIf=@service_mem_limit:0.8
+        - com.df.alertFor=30s
 
   logstash:
-    image: vfarcic/logstash-devops21
+    image: docker.elastic.co/logstash/logstash:5.5.2
     networks:
       - default
+    deploy:
+      labels:
+        - com.df.distribute=true
+        - com.df.notify=true
+        - com.df.port=80
+        - com.df.alertName=memlimit
+        - com.df.alertIf=@service_mem_limit:0.8
+        - com.df.alertFor=30s
+    configs:
+      - logstash.conf
     environment:
       - LOGSPOUT=ignore
-    deploy:
-      resources:
-        reservations:
-          memory: 100M
+    command: logstash -f /logstash.conf
 
   kibana:
-    image: kibana:5.1.2
+    image: docker.elastic.co/kibana/kibana:5.5.2
     networks:
       - default
       - proxy
+    ports:
+      - 5601:5601
     environment:
+      - xpack.security.enabled=false
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     deploy:
-      resources:
-        reservations:
-          memory: 50M
       labels:
         - com.df.notify=true
         - com.df.distribute=true
-        - com.df.servicePath=/app,/elasticsearch,/api,/ui,/bundles,/plugins
+        - com.df.servicePath=/app,/elasticsearch,/api,/ui,/bundles,/plugins,/status,/es_admin
         - com.df.port=5601
+        - com.df.alertName=memlimit
+        - com.df.alertIf=@service_mem_limit:0.8
+        - com.df.alertFor=30s
 
   logspout:
-    image: gliderlabs/logspout
+    image: gliderlabs/logspout:v3.2.2
     networks:
       - default
     environment:
@@ -57,3 +66,24 @@ services:
     command: syslog://logstash:51415
     deploy:
       mode: global
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.alertName=memlimit
+        - com.df.alertIf=@service_mem_limit:0.8
+        - com.df.alertFor=30s
+      resources:
+        reservations:
+          memory: 20M
+        limits:
+          memory: 30M
+
+networks:
+  proxy:
+    external: true
+  default:
+    external: false
+
+configs:
+  logstash.conf:
+    external: true
