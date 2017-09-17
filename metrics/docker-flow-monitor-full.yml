@@ -1,0 +1,139 @@
+version: "3.1"
+
+services:
+
+  monitor:
+    image: vfarcic/docker-flow-monitor:${TAG:-latest}
+    networks:
+      - proxy
+      - monitor
+    environment:
+      - ARG_STORAGE_LOCAL_PATH=/data
+      - ARG_WEB_EXTERNAL-URL=http://$DOMAIN/monitor
+      - LISTENER_ADDRESS=swarm-listener
+      - ARG_ALERTMANAGER_URL=http://alert-manager:9093
+    deploy:
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/monitor
+        - com.df.port=9090
+        - com.df.alertName=memlimit
+        - com.df.alertIf=@service_mem_limit:0.8
+        - com.df.alertFor=30s
+      resources:
+        reservations:
+          memory: 2500M
+        limits:
+          memory: 3500M
+
+  alert-manager:
+    image: prom/alertmanager
+    networks:
+      - monitor
+    secrets:
+      - alert_manager_config
+    command: -config.file=/run/secrets/alert_manager_config -storage.path=/alertmanager
+
+  swarm-listener:
+    image: vfarcic/docker-flow-swarm-listener
+    networks:
+      - monitor
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DF_NOTIFY_CREATE_SERVICE_URL=http://monitor:8080/v1/docker-flow-monitor/reconfigure
+      - DF_NOTIFY_REMOVE_SERVICE_URL=http://monitor:8080/v1/docker-flow-monitor/remove
+    deploy:
+      labels:
+        - com.df.alertName=memlimit
+        - com.df.alertIf=@service_mem_limit:0.8
+        - com.df.alertFor=30s
+      placement:
+        constraints: [node.role == manager]
+      resources:
+        reservations:
+          memory: 10M
+        limits:
+          memory: 20M
+
+  grafana:
+    image: grafana/grafana:${GRAFANA_TAG:-latest}
+    networks:
+      - monitor
+      - proxy
+    environment:
+      - GF_SERVER_DOMAIN=${DOMAIN:-localhost}
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/grafana
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASS:-admin}
+    deploy:
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/grafana/,/grafana/public,/grafana/api
+        - com.df.reqPathSearch=/grafana
+        - com.df.port=3000
+
+  cadvisor:
+    image: google/cadvisor:${CADVISOR_TAG:-latest}
+    networks:
+      - monitor
+    volumes:
+      - /:/rootfs
+      - /var/run:/var/run
+      - /sys:/sys
+      - /var/lib/docker:/var/lib/docker
+    deploy:
+      mode: global
+      labels:
+        - com.df.notify=true
+        - com.df.scrapePort=8080
+        - com.df.alertName=memlimit
+        - com.df.alertIf=@service_mem_limit:0.8
+        - com.df.alertFor=30s
+      resources:
+        reservations:
+          memory: 40M
+        limits:
+          memory: 80M
+
+  node-exporter:
+    image: basi/node-exporter:${NODE_EXPORTER_TAG:-v1.14.0}
+    networks:
+      - monitor
+    environment:
+      - HOST_HOSTNAME=/etc/host_hostname
+      - LOGSPOUT=ignore
+    volumes:
+      - /proc:/host/proc
+      - /sys:/host/sys
+      - /:/rootfs
+      - /etc/hostname:/etc/host_hostname
+    deploy:
+      mode: global
+      labels:
+        - com.df.notify=true
+        - com.df.scrapePort=9100
+        - com.df.alertName.1=memload
+        - com.df.alertIf.1=@node_mem_limit:0.9
+        - com.df.alertFor.1=30s
+        - com.df.alertName.2=memlimit
+        - com.df.alertIf.2=@service_mem_limit:0.8
+        - com.df.alertFor.2=30s
+      resources:
+        reservations:
+          memory: 30M
+        limits:
+          memory: 50M
+    command: '-collector.procfs /host/proc -collector.sysfs /host/sys -collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($$|/)" -collector.textfile.directory /etc/node-exporter/ -collectors.enabled="conntrack,diskstats,entropy,filefd,filesystem,loadavg,mdadm,meminfo,netdev,netstat,stat,textfile,time,vmstat,ipvs"'
+
+networks:
+  monitor:
+    external: true
+  proxy:
+    external: true
+
+secrets:
+  alert_manager_config:
+    external: true
