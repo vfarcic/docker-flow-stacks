@@ -58,11 +58,3 @@ pipeline {
     }
   }
 }
-
-
-docker run -d --name elasticsearch-curator \
-    -e INTERVAL_IN_HOURS=24 \
-    -e OLDER_THAN_IN_DAYS="2" \
-    -e ELASTICSEARCH_HOST=elasticsearch \
-    --network infra_default \
-    visity/elasticsearch-curator
