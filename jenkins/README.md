@@ -98,12 +98,8 @@ sudo chmod 777 /workspace
 ### Deployment
 
 ```bash
-export JENKINS_IP=[...]
-
-# Replace MASTER_USER and MASTER_PASS with "real" values
-MASTER_USER=admin \
-    MASTER_PASS=admin \
-    docker stack deploy -c jenkins-swarm-agent.yml jenkins-agent
+    # Replace MASTER_USER and MASTER_PASS with "real" values
+    docker stack deploy -c jenkins-swarm-agent.yml jenkins-agent -username MASTER_USER -password MASTER_PASS
 ```
 
 ## jenkins-swarm-agent-secrets.yml
