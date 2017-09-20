@@ -1,0 +1,147 @@
+version: "3.1"
+
+services:
+  proxy:
+    image: vfarcic/docker-flow-proxy
+    ports:
+      - 443:443
+    networks:
+      - proxy
+    environment:
+      - LISTENER_ADDRESS=swarm-listener
+      - MODE=swarm
+      - TIMEOUT_HTTP_REQUEST=60
+      - TIMEOUT_HTTP_KEEP_ALIVE=60
+      - TIMEOUT_CONNECT=60
+      - CONNECTION_MODE=http-server-close
+    secrets:
+      - cert-drove-proxy
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 32M
+
+  swarm-listener:
+    image: vfarcic/docker-flow-swarm-listener
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DF_NOTIFY_CREATE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/reconfigure
+      - DF_NOTIFY_REMOVE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/remove
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 32M
+
+  sonar:
+    image: sonarqube
+    command: -Dsonar.web.context=/sonar
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/sonar
+        - com.df.port=9000
+        - com.docker.stack.namespace=drove
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "1024M"
+    networks:
+      - drove-ci
+      - proxy
+    environment:
+       - SONARQUBE_JDBC_USERNAME=sonar
+       - SONARQUBE_JDBC_PASSWORD=sonar
+       - SONARQUBE_JDBC_URL=jdbc:mysql://mydb.com:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
+    volumes: ["sonar_data_vol:/opt/sonarqube/data"]
+
+  nexus:                               
+    image: flusso/drove-nexus-3
+    deploy:                               
+      replicas: 1                     
+      labels:                                    
+        - com.df.xForwardedProto=true
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.serviceDomain.1=ci.domain.nl
+        - com.df.serviceDomain.2=registry.domain.nl
+        - com.df.servicePath.1=/nexus
+        - com.df.servicePath.2=/
+        - com.df.port.1=8081
+        - com.df.port.2=18443
+        - com.df.srcPort=443
+        - com.docker.stack.namespace=drove
+      resources:                      
+        limits:                                  
+          memory: "2560M" 
+    networks:                   
+      - drove-ci                   
+      - proxy                  
+    environment:                          
+       - NEXUS_CONTEXT=nexus                     
+    volumes: ["nexus_data:/nexus-data", "nexus_blob:/blob", "nexus_blob_docker:/blob/docker"]                  
+
+  jenkins:
+    image: flusso/drove-jenkins-master:2.73.1
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "2048M"
+      labels:
+        - com.df.xForwardedProto=true
+        - com.df.timeoutServer=180
+        - com.df.connectionMode=http-server-close
+        - com.df.reqMode=http
+        - com.df.sessionType=sticky-server
+        - com.df.notify=true
+        - com.df.servicePath=/jenkins
+        - com.df.port=8080
+        - com.docker.stack.namespace=drove
+    networks:
+      - drove-ci
+      - proxy
+    environment:
+       - JENKINS_OPTS=--prefix=/jenkins
+       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -server -XX:+AlwaysPreTouch -Duser.timezone=Europe/Amsterdam -Xmx1280m -Xms1024m
+       - TRY_UPGRADE_IF_NO_MARKER=true
+    volumes: ["jenkins_home_EBS:/var/jenkins_home"]
+
+volumes:
+  sonar_data_vol:
+    driver: "cloudstor:aws"
+  nexus_data:
+    driver: "cloudstor:aws"
+  nexus_blob:
+    driver: "cloudstor:aws"
+  nexus_blob_docker:
+    driver: "cloudstor:aws"
+  jenkins_home_EBS:
+    driver: "cloudstor:aws"
+    driver_opts: 
+      size: 50 
+      ebstype: gp2 
+
+secrets:
+   cert-drove-proxy:
+     file: manatee_proxy.pem
+
+networks:
+  drove-ci:
+    external: true
+  proxy:
+    external: true
