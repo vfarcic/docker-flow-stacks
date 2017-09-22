@@ -3,7 +3,7 @@ version: "3.1"
 services:
 
   master:
-    image: vfarcic/jenkins:${TAG-:latest}
+    image: vfarcic/jenkins:${TAG:-latest}
     ports:
       - 50000:50000
     environment:
@@ -28,7 +28,6 @@ services:
     secrets:
       - jenkins-user
       - jenkins-pass
-      - cluster-info.properties
 
   agent:
     image: vfarcic/jenkins-swarm-agent
@@ -43,6 +42,7 @@ services:
     secrets:
       - jenkins-user
       - jenkins-pass
+      - cluster-info.properties
     deploy:
       placement:
         constraints: [node.role == manager]
