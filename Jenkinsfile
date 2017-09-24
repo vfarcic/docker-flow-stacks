@@ -40,12 +40,6 @@ pipeline {
         sh "docker image push vfarcic/compose"
       }
     }
-    stage("aws-cli") {
-      steps {
-        sh "cd hosting/aws-cli && docker image build --no-cache -t vfarcic/aws-cli ."
-        sh "docker image push vfarcic/aws-cli"
-      }
-    }
   }
   post {
     always {

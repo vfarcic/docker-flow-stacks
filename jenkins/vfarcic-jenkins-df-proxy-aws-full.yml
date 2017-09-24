@@ -34,7 +34,7 @@ services:
     environment:
       - USER_NAME_SECRET=/run/secrets/${JENKINS_USER_SECRET:-jenkins-user}
       - PASSWORD_SECRET=/run/secrets/${JENKINS_PASS_SECRET:-jenkins-pass}
-      - COMMAND_OPTIONS=-master http://master:8080/jenkins ${AGENT_LABELS} -executors 3
+      - COMMAND_OPTIONS=-master http://master:8080/jenkins ${AGENT_LABELS} -executors 4
     networks:
       - default
     volumes:
