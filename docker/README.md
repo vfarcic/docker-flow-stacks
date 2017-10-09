@@ -95,9 +95,10 @@ eval $(docker-machine env test)
 docker swarm init \
     --advertise-addr $(docker-machine ip test)
 
-docker network create --driver overlay proxy
+docker network create \
+    --driver overlay proxy
 
-DOMAIN=localhost docker stack deploy \
+docker stack deploy \
     -c ../proxy/docker-flow-proxy.yml \
     proxy
 ```
@@ -105,7 +106,21 @@ DOMAIN=localhost docker stack deploy \
 ### Deployment
 
 ```bash
-docker stack deploy -c registry-df-proxy.yml registry
+DOMAIN=localhost docker stack deploy \
+    -c registry-df-proxy.yml \
+    registry
+```
+
+### Test
+
+```bash
+docker image pull alpine
+
+docker image tag alpine localhost/alpine
+
+docker image push localhost/alpine
+
+docker image pull localhost/alpine
 ```
 
 ## registry-df-proxy-ssl.yml

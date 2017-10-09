@@ -6,6 +6,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
     environment:
       - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
     networks:
       - default
     deploy:
@@ -16,6 +17,11 @@ services:
         - com.df.alertName=memlimit
         - com.df.alertIf=@service_mem_limit:0.8
         - com.df.alertFor=30s
+      resources:
+        reservations:
+          memory: 1000M
+        limits:
+          memory: 1500M
 
   logstash:
     image: docker.elastic.co/logstash/logstash:5.5.2

@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.11.1">
+  <actions>
+    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.1.2">
+      <blueOceanUrlObject class="io.jenkins.blueocean.service.embedded.BlueOceanUrlObjectImpl">
+        <mappedUrl>blue/organizations/jenkins/aws-scale</mappedUrl>
+      </blueOceanUrlObject>
+    </io.jenkins.blueocean.service.embedded.BlueOceanUrlAction>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.1.7">
+      <jobProperties/>
+      <triggers/>
+      <parameters>
+        <string>service</string>
+        <string>scale</string>
+      </parameters>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36">
+    <script>pipeline {
+  agent {
+    label &quot;prod&quot;
+  }
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '2'))
+    disableConcurrentBuilds()
+  }
+  parameters {
+    string(
+      name: &quot;scale&quot;,
+      defaultValue: &quot;1&quot;,
+      description: &quot;The number of worker nodes to add or remove&quot;
+    )
+  }
+  stages {
+    stage(&quot;scale&quot;) {
+      steps {
+        git &quot;https://github.com/vfarcic/docker-aws-cli.git&quot;
+        script {
+          def asgName = sh(
+            script: &quot;source /run/secrets/aws &amp;&amp; docker-compose run --rm asg-name&quot;,
+            returnStdout: true
+          ).trim()
+          if (asgName == &quot;&quot;) {
+            error &quot;Could not find auto-scaling group&quot;
+          }
+          def asgDesiredCapacity = sh(
+            script: &quot;source /run/secrets/aws &amp;&amp; ASG_NAME=${asgName} docker-compose run --rm asg-desired-capacity&quot;,
+            returnStdout: true
+          ).trim().toInteger()
+          def asgNewCapacity = asgDesiredCapacity + scale.toInteger()
+          if (asgNewCapacity &lt; 1) {
+            error &quot;The number of worker nodes is already at the minimum capacity of 1&quot;
+          } else if (asgNewCapacity > 3) {
+            error &quot;The number of worker nodes is already at the maximum capacity of 3&quot;
+          } else {
+            sh &quot;source /run/secrets/aws &amp;&amp; ASG_NAME=${asgName} ASG_DESIRED_CAPACITY=${asgNewCapacity} docker-compose run --rm asg-update-desired-capacity&quot;
+            if (scale.toInteger() &gt; 0) {
+              sleep 300
+              script {
+                def servicesOut = sh(
+                  script: &quot;docker service ls -q --filter label=com.df.reschedule=true&quot;,
+                  returnStdout: true
+                )
+                def services = servicesOut.split('\n')
+                def date = new Date()
+                for(int i = 0; i &lt; services.size(); i++) {
+                  def service = services[0]
+                  sh &quot;docker service update --env-add 'com.df.rescheduleDate=${date}' ${service}&quot;
+                }
+              }
+            }
+            echo &quot;Changed the number of worker nodes from ${asgDesiredCapacity} to ${asgNewCapacity}&quot;
+          }
+        }
+      }
+    }
+  }
+  post {
+    success {
+      slackSend(
+        color: &quot;good&quot;,
+        message: &quot;&quot;&quot;Worker nodes were scaled.
+Please check Jenkins logs for the job ${env.JOB_NAME} #${env.BUILD_NUMBER}
+${env.BUILD_URL}console&quot;&quot;&quot;
+      )
+    }
+    failure {
+      slackSend(
+        color: &quot;danger&quot;,
+        message: &quot;&quot;&quot;Worker nodes could not be scaled.
+Please check Jenkins logs for the job ${env.JOB_NAME} #${env.BUILD_NUMBER}
+${env.BUILD_URL}console&quot;&quot;&quot;
+      )
+    }
+  }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <authToken>DevOps22</authToken>
+  <disabled>false</disabled>
+</flow-definition>
