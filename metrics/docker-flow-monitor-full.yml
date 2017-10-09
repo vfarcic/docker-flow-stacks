@@ -7,6 +7,7 @@ services:
     networks:
       - proxy
       - monitor
+      - logging_default
     environment:
       - ARG_STORAGE_LOCAL_PATH=/data
       - ARG_WEB_EXTERNAL-URL=http://$DOMAIN/monitor
@@ -23,9 +24,9 @@ services:
         - com.df.alertFor=30s
       resources:
         reservations:
-          memory: 2500M
+          memory: 1000M
         limits:
-          memory: 3500M
+          memory: 1500M
 
   alert-manager:
     image: prom/alertmanager
@@ -132,6 +133,8 @@ networks:
   monitor:
     external: true
   proxy:
+    external: true
+  logging_default:
     external: true
 
 secrets:
