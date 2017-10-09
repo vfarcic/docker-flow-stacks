@@ -35,6 +35,11 @@ services:
         - com.df.alertName=memlimit
         - com.df.alertIf=@service_mem_limit:0.8
         - com.df.alertFor=30s
+      resources:
+        reservations:
+          memory: 400M
+        limits:
+          memory: 600M
     configs:
       - logstash.conf
     environment:
