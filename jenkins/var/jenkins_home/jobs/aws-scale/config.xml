@@ -25,7 +25,7 @@
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36">
     <script>pipeline {
   agent {
-    label &quot;prod&quot;
+    label "prod"
   }
   options {
     buildDiscarder(logRotator(numToKeepStr: '2'))
@@ -33,50 +33,50 @@
   }
   parameters {
     string(
-      name: &quot;scale&quot;,
-      defaultValue: &quot;1&quot;,
-      description: &quot;The number of worker nodes to add or remove&quot;
+      name: "scale",
+      defaultValue: "1",
+      description: "The number of worker nodes to add or remove"
     )
   }
   stages {
-    stage(&quot;scale&quot;) {
+    stage("scale") {
       steps {
-        git &quot;https://github.com/vfarcic/docker-aws-cli.git&quot;
+        git "https://github.com/vfarcic/docker-aws-cli.git"
         script {
           def asgName = sh(
-            script: &quot;source /run/secrets/aws &amp;&amp; docker-compose run --rm asg-name&quot;,
+            script: "source /run/secrets/aws &amp;&amp; docker-compose run --rm asg-name",
             returnStdout: true
           ).trim()
-          if (asgName == &quot;&quot;) {
-            error &quot;Could not find auto-scaling group&quot;
+          if (asgName == "") {
+            error "Could not find auto-scaling group"
           }
           def asgDesiredCapacity = sh(
-            script: &quot;source /run/secrets/aws &amp;&amp; ASG_NAME=${asgName} docker-compose run --rm asg-desired-capacity&quot;,
+            script: "source /run/secrets/aws &amp;&amp; ASG_NAME=${asgName} docker-compose run --rm asg-desired-capacity",
             returnStdout: true
           ).trim().toInteger()
           def asgNewCapacity = asgDesiredCapacity + scale.toInteger()
           if (asgNewCapacity &lt; 1) {
-            error &quot;The number of worker nodes is already at the minimum capacity of 1&quot;
-          } else if (asgNewCapacity > 3) {
-            error &quot;The number of worker nodes is already at the maximum capacity of 3&quot;
+            error "The number of worker nodes is already at the minimum capacity of 1"
+          } else if (asgNewCapacity &gt; 3) {
+            error "The number of worker nodes is already at the maximum capacity of 3"
           } else {
-            sh &quot;source /run/secrets/aws &amp;&amp; ASG_NAME=${asgName} ASG_DESIRED_CAPACITY=${asgNewCapacity} docker-compose run --rm asg-update-desired-capacity&quot;
+            sh "source /run/secrets/aws &amp;&amp; ASG_NAME=${asgName} ASG_DESIRED_CAPACITY=${asgNewCapacity} docker-compose run --rm asg-update-desired-capacity"
             if (scale.toInteger() &gt; 0) {
               sleep 300
               script {
                 def servicesOut = sh(
-                  script: &quot;docker service ls -q --filter label=com.df.reschedule=true&quot;,
+                  script: "docker service ls -q -f label=com.df.reschedule=true",
                   returnStdout: true
                 )
                 def services = servicesOut.split('\n')
                 def date = new Date()
                 for(int i = 0; i &lt; services.size(); i++) {
                   def service = services[0]
-                  sh &quot;docker service update --env-add 'com.df.rescheduleDate=${date}' ${service}&quot;
+                  sh "docker service update --env-add 'RESCHEDULE_DATE=${date}' ${service}"
                 }
               }
             }
-            echo &quot;Changed the number of worker nodes from ${asgDesiredCapacity} to ${asgNewCapacity}&quot;
+            echo "Changed the number of worker nodes from ${asgDesiredCapacity} to ${asgNewCapacity}"
           }
         }
       }
@@ -85,18 +85,18 @@
   post {
     success {
       slackSend(
-        color: &quot;good&quot;,
-        message: &quot;&quot;&quot;Worker nodes were scaled.
+        color: "good",
+        message: """Worker nodes were scaled.
 Please check Jenkins logs for the job ${env.JOB_NAME} #${env.BUILD_NUMBER}
-${env.BUILD_URL}console&quot;&quot;&quot;
+${env.BUILD_URL}console"""
       )
     }
     failure {
       slackSend(
-        color: &quot;danger&quot;,
-        message: &quot;&quot;&quot;Worker nodes could not be scaled.
+        color: "danger",
+        message: """Worker nodes could not be scaled.
 Please check Jenkins logs for the job ${env.JOB_NAME} #${env.BUILD_NUMBER}
-${env.BUILD_URL}console&quot;&quot;&quot;
+${env.BUILD_URL}console"""
       )
     }
   }
