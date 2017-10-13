@@ -59,7 +59,7 @@ services:
           memory: 20M
 
   grafana:
-    image: grafana/grafana:${GRAFANA_TAG:-latest}
+    image: grafana/grafana:${GRAFANA_TAG:-4.5.2}
     networks:
       - monitor
       - proxy

@@ -132,7 +132,7 @@ It also assumes that ssl is terminated at the proxy.
 
 * Network called `proxy` is created
 * Docker Flow Proxy is running and has the environment variable `CONNECTION_MODE=http-keep-alive`
-* SSL Terminated at proxy.
+* SSL Terminated at proxy
 
 ```bash
 docker-machine create -d virtualbox test
