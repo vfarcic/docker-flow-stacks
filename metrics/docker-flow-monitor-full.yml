@@ -7,7 +7,6 @@ services:
     networks:
       - proxy
       - monitor
-      - logging_default
     environment:
       - ARG_STORAGE_LOCAL_PATH=/data
       - ARG_WEB_EXTERNAL-URL=http://$DOMAIN/monitor
@@ -63,6 +62,7 @@ services:
     networks:
       - monitor
       - proxy
+      - logging_default
     environment:
       - GF_SERVER_DOMAIN=${DOMAIN:-localhost}
       - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/grafana
