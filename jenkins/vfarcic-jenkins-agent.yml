@@ -12,7 +12,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     secrets:
       - jenkins-user
-      - jenkins-pass
+      - source: jenkins-pass
+        mode: 0400
     deploy:
       placement:
         constraints: [node.role == manager]
