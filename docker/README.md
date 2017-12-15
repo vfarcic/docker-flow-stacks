@@ -26,8 +26,7 @@ This stack deploys Portainer integrated with *Docker Flow Proxy*.
 ```bash
 docker network create --driver overlay proxy
 
-CONNECTION_MODE=http-keep-alive \
-    docker stack deploy \
+docker stack deploy \
     -c ../proxy/docker-flow-proxy.yml \
     proxy
 ```
@@ -39,7 +38,7 @@ docker stack deploy \
     -c portainer-df-proxy.yml \
     portainer
 
-open "http://localhost/portainer/"
+open "http://localhost/portainer"
 ```
 
 ## registry.yml

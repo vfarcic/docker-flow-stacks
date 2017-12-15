@@ -8,6 +8,6 @@ git
 github
 swarm
 blueocean
-ec2
+ec2:1.36
 thinBackup
 github-oauth
