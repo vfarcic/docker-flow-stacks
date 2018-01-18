@@ -15,8 +15,7 @@ services:
         - com.df.notify=true
         - com.df.distribute=true
         - com.df.servicePath=/portainer
-        - com.df.reqPathSearch=/portainer
-        - com.df.reqPathReplace=
+        - com.df.reqPathSearchReplace=/portainer,
         - com.df.port=9000
     command: -H unix:///var/run/docker.sock
 
