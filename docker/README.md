@@ -38,7 +38,7 @@ docker stack deploy \
     -c portainer-df-proxy.yml \
     portainer
 
-open "http://localhost/portainer"
+open "http://localhost/portainer/"
 ```
 
 ## registry.yml
