@@ -41,6 +41,39 @@ docker stack deploy -c docker-flow-monitor-proxy.yml monitor
 open "http://localhost/monitor"
 ```
 
+## grafana-df-proxy.yml
+
+This stack sets up Grafana with Docker Flow Proxy. The stack assumes that Grafana will be served through a dedicated (sub)domain.
+
+### Requirements
+
+* docker-flow-proxy.yml stack
+
+```bash
+docker network create --driver overlay proxy
+
+docker stack deploy -c ../proxy/docker-flow-proxy.yml proxy
+```
+
+### Deployment
+
+```bash
+# Change to your Grafana user
+export USER=admin
+
+# Change to your Grafana password
+export PASS=secret
+
+# Change to your domain
+export DOMAIN=localhost
+
+docker stack deploy -c grafana-df-proxy.yml grafana
+
+open "http://${DOMAIN}"
+```
+
+Use `http://metrics_prometheus:9090` as Prometheus data source and `http://logging_elasticsearch:9200` for ElasticSearch.
+
 ## prometheus.yml
 
 This stack deploys Prometheus

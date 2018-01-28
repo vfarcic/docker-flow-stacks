@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+
+  grafana:
+    image: grafana/grafana:${GRAFANA_TAG:-4.6.0}
+    networks:
+      - proxy
+    environment:
+      - GF_SECURITY_ADMIN_USER=${USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${PASS:-admin}
+    deploy:
+      labels:
+        - com.df.notify=true
+        - com.df.serviceDomain=${DOMAIN:-localhost}
+        - com.df.port=3000
+
+networks:
+  proxy:
+    external: true
