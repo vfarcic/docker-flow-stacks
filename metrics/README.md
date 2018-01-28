@@ -72,8 +72,6 @@ docker stack deploy -c grafana-df-proxy.yml grafana
 open "http://${DOMAIN}"
 ```
 
-Use `http://metrics_prometheus:9090` as Prometheus data source and `http://logging_elasticsearch:9200` for ElasticSearch.
-
 ## prometheus.yml
 
 This stack deploys Prometheus
