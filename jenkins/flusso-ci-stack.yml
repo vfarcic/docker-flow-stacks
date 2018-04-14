@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   proxy:
-    image: vfarcic/docker-flow-proxy
+    image: dockerflow/docker-flow-proxy
     ports:
       - 443:443
     networks:
