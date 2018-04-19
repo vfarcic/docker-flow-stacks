@@ -1,5 +1,6 @@
 FROM jenkinsci/jenkins:lts-alpine
 
+ENV SECRETS_DIR=/run/secrets
 # Whether to skip setup wizard
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 
